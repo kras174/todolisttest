@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2>{{ todo.title }}</h2>
-    <p class="descriptionItem-container">{{ todo.description }}</p>
+    <p class="cope-text descriptionItem-container">{{ todo.description }}</p>
     <small class="tagsItem-container">
       <i>Тэги: {{ todo.tags }}</i>
     </small>
@@ -11,7 +11,7 @@
 
     <button class="remove-btn" @click="$emit('remove-todo', index)">X</button>
     <div class="foterItem-container">
-      <small :class="[outdated ? 'status-outdate' : '']"
+      <small :class="{ 'status-outdate': outdated }"
         >Завершить до: {{ formatDate }}</small
       >
       <small
@@ -80,7 +80,13 @@ export default {
     background: #333;
     color: #fff;
   }
+  .cope-text {
+    overflow: hidden;
+  }
   .descriptionItem-container {
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
     margin-top: 10px;
     margin-bottom: 10px;
   }

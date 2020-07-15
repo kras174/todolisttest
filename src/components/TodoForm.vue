@@ -95,6 +95,8 @@ export default {
       const parsed = JSON.stringify(this.todos);
       localStorage.setItem("todos", parsed);
 
+      this.$router.push("/");
+
       this.title = "";
       this.tags = "";
       this.description = "";
@@ -128,6 +130,8 @@ export default {
 
       const parsed = JSON.stringify(this.todos);
       localStorage.setItem("todos", parsed);
+
+      this.$router.push("/");
     }
   }
 };
