@@ -6,7 +6,7 @@
   </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 #nav {
   background: #333;
   color: #fff;
@@ -16,22 +16,9 @@
   h1 {
     margin-bottom: 10px;
   }
-  .router-link-exact-active {
-    text-decoration: none;
-    color: #fff;
-  }
   a {
     text-decoration: none;
     color: #fff;
-  }
-  a {
-    text-decoration: none;
-    color: #fff;
-
-    &:visited {
-      text-decoration: none;
-      color: #fff;
-    }
   }
 }
 </style>
