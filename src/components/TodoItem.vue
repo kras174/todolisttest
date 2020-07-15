@@ -14,14 +14,8 @@
       <small>Завершить до: {{ todo.eDate }}</small>
       <small
         class="status-container"
-        :class="[
-          todo.status === 'В работе'
-            ? 'status-progress'
-            : todo.status === 'Завершено'
-            ? 'status-complete'
-            : 'status-overtime'
-        ]"
-        >{{ todo.status }}</small
+        :class="[todo.status ? 'status-complete' : 'status-progress']"
+        >{{ todo.status ? "Завершено" : "В работе" }}</small
       >
     </div>
   </div>

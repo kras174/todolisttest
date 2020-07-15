@@ -2,8 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 
 import Home from "../views/Home.vue";
-import AddTodo from "../views/AddTodo.vue";
-import EditTodo from "../views/EditTodo.vue";
+import TodoForm from "@/components/TodoForm.vue";
 import About from "../views/About.vue";
 
 Vue.use(VueRouter);
@@ -17,12 +16,12 @@ const routes = [
   {
     path: "/addtodo",
     name: "AddTodo",
-    component: AddTodo
+    component: TodoForm
   },
   {
     path: "/todos/:id",
     name: "EditTodo",
-    component: EditTodo
+    component: TodoForm
   },
   {
     path: "/about",
