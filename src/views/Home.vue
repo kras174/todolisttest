@@ -1,29 +1,29 @@
 <template>
   <div class="home">
-    <div class="todoList-container">
-      <div
+    <div v-if="todos.length !== 0" class="todoList-container">
+      <TodoFilter />
+      <TodoItem
         :key="todo.id"
-        v-for="(todo, index) in todos"
+        v-for="(todo, index) in todosFilter"
         class="todoItem-container"
-      >
-        <TodoItem
-          :todo="todo"
-          :index="index"
-          @remove-todo="$emit('remove-todo', index)"
-        />
-      </div>
-      <h2 v-show="todos.length === 0">Никаких дел пока нет!</h2>
+        :todo="todo"
+        :index="index"
+        @remove-todo="removeTodo"
+      />
     </div>
+    <h2 v-else>Никаких дел пока нет!</h2>
   </div>
 </template>
 
 <script>
 import TodoItem from "@/components/TodoItem";
+import TodoFilter from "@/components/TodoFilter";
 
 export default {
   name: "Home",
   components: {
-    TodoItem
+    TodoItem,
+    TodoFilter
   },
   data() {
     return {
@@ -32,6 +32,20 @@ export default {
   },
   mounted() {
     this.getTodos();
+  },
+  computed: {
+    todosFilter() {
+      if (!this.$route.params.filter) {
+        return this.todos;
+      } else if (this.$route.params.filter === "inwork") {
+        return this.todos.filter(todo => todo.status === false);
+      } else if (this.$route.params.filter === "complite") {
+        return this.todos.filter(todo => todo.status === true);
+      } else if (this.$route.params.filter === "outdate") {
+        return this.todos.filter(todo => Date.parse(todo.eDate) < Date.now());
+      }
+      return this.$route.params.filter;
+    }
   },
   methods: {
     removeTodo(index) {

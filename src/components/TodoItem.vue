@@ -11,7 +11,9 @@
 
     <button class="remove-btn" @click="$emit('remove-todo', index)">X</button>
     <div class="foterItem-container">
-      <small>Завершить до: {{ todo.eDate }}</small>
+      <small :class="[outdated ? 'status-outdate' : '']"
+        >Завершить до: {{ formatDate }}</small
+      >
       <small
         class="status-container"
         :class="[todo.status ? 'status-complete' : 'status-progress']"
@@ -22,6 +24,8 @@
 </template>
 
 <script>
+import moment from "moment";
+
 export default {
   name: "TodoItem",
   props: ["todo", "index"],
@@ -29,11 +33,19 @@ export default {
     removeItem(n) {
       console.log(n);
     }
+  },
+  computed: {
+    formatDate() {
+      return moment(this.todo.eDate).format("DD-MM-YYYY");
+    },
+    outdated() {
+      return Date.parse(this.todo.eDate) < Date.now();
+    }
   }
 };
 </script>
 
-<style>
+<style lang="scss">
 .remove-btn {
   position: absolute;
   top: 10px;
@@ -64,25 +76,25 @@ export default {
   background: #fff;
   color: #333;
   transition: all 0.2s ease-in;
-}
-.todoItem-container:hover {
-  background: #333;
-  color: #fff;
-}
-.descriptionItem-container {
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-.foterItem-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  margin-top: 20px;
-}
-.status-container {
-  padding: 5px;
-  border-radius: 5px;
-  color: #fff;
+  &:hover {
+    background: #333;
+    color: #fff;
+  }
+  .descriptionItem-container {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  .foterItem-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 20px;
+    .status-container {
+      padding: 5px;
+      border-radius: 5px;
+      color: #fff;
+    }
+  }
 }
 .status-progress {
   background: orange;
@@ -90,7 +102,10 @@ export default {
 .status-complete {
   background: green;
 }
-.status-overtime {
+.status-outdate {
+  padding: 5px;
+  border-radius: 5px;
   background: red;
+  color: #fff;
 }
 </style>

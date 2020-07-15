@@ -1,13 +1,12 @@
 <template>
   <div class="form-container">
-    <form @submit.prevent="addTodo">
+    <form @submit.prevent="confirmTodo">
       <input
         required
         type="text"
         v-model="title"
         name="title"
         placeholder="Добавьте название"
-        :class="[title.length < 1 ? 'not-valid' : 'valid']"
       />
       <input
         required
@@ -15,7 +14,6 @@
         v-model="tags"
         name="tags"
         placeholder="Добавьте тэги"
-        :class="[tags.length < 1 ? 'not-valid' : 'valid']"
       />
       <textarea
         required
@@ -24,7 +22,6 @@
         name="description"
         maxlength="2048"
         placeholder="Добавьте описание"
-        :class="[description.length < 10 ? 'not-valid' : 'valid']"
       />
       <div class="form-footer">
         <datepicker
@@ -32,14 +29,19 @@
           :language="ru"
           v-model="eDate"
           placeholder="Дедлайн"
-          :disabled-dates="{ to: new Date() }"
         ></datepicker>
         <div class="check-group" v-show="$route.params.id">
           <input type="checkbox" name="status" id="status" v-model="status" />
           <label for="status">Завершено</label>
         </div>
       </div>
-      <input type="submit" value="Добавить дело" class="btn" />
+      <input
+        v-if="$route.params.id"
+        type="submit"
+        value="Сохранить дело"
+        class="btn"
+      />
+      <input v-else type="submit" value="Добавить дело" class="btn" />
     </form>
   </div>
 </template>
@@ -69,6 +71,10 @@ export default {
     if (this.$route.params.id) this.getTodoInfo();
   },
   methods: {
+    confirmTodo() {
+      if (this.$route.params.id) this.editTodo();
+      else this.addTodo();
+    },
     addTodo() {
       const newTodo = {
         id: uuidv4(),
@@ -109,7 +115,7 @@ export default {
       this.tags = this.todos[index].tags;
       this.description = this.todos[index].description;
       this.eDate = this.todos[index].eDate;
-      this.status = this.todos[index].status === "Завершено";
+      this.status = this.todos[index].status;
     },
     editTodo() {
       const index = this.$route.params.id;
@@ -118,7 +124,7 @@ export default {
       this.todos[index].tags = this.tags;
       this.todos[index].description = this.description;
       this.todos[index].eDate = this.eDate;
-      this.todos[index].status = this.status ? "Завершено" : "В работе";
+      this.todos[index].status = this.status;
 
       const parsed = JSON.stringify(this.todos);
       localStorage.setItem("todos", parsed);
