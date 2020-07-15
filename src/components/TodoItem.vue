@@ -8,7 +8,6 @@
     <router-link :to="`/todos/${index}`" class="edit-btn">
       ред
     </router-link>
-    |
 
     <button class="remove-btn" @click="$emit('remove-todo', index)">X</button>
     <div class="foterItem-container">
