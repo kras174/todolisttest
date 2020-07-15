@@ -1,32 +1,10 @@
 <template>
   <ul class="filter-container">
     Фильтр:
-    <li>
-      <router-link to="/" :class="{ active: $route.params.filter === '/' }"
-        >Все</router-link
-      >
-    </li>
-    <li>
-      <router-link
-        to="/inwork"
-        :class="{ active: $route.params.filter === '/inwork' }"
-        >В работе</router-link
-      >
-    </li>
-    <li>
-      <router-link
-        to="/complite"
-        :class="{ active: $route.params.filter === '/complite' }"
-        >Завершены</router-link
-      >
-    </li>
-    <li>
-      <router-link
-        to="/outdate"
-        :class="{ active: $route.params.filter === '/outdate' }"
-        >Просрочены</router-link
-      >
-    </li>
+    <li><router-link to="/">Все</router-link></li>
+    <li><router-link to="/inwork">В работе</router-link></li>
+    <li><router-link to="/complite">Завершены</router-link></li>
+    <li><router-link to="/outdate">Просрочены</router-link></li>
   </ul>
 </template>
 
@@ -38,9 +16,11 @@ export default {};
 .filter-container {
   display: flex;
   justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
   margin: 20px auto;
   li {
-    margin-left: 10px;
+    margin: 10px 5px;
     list-style: none;
     a {
       text-decoration: none;

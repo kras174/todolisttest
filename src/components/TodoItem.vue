@@ -1,15 +1,11 @@
 <template>
-  <div>
+  <div @click="$router.push(`/todos/${index}`)">
     <h2>{{ todo.title }}</h2>
     <p class="cope-text descriptionItem-container">{{ todo.description }}</p>
     <small class="tagsItem-container">
       <i>Тэги: {{ todo.tags }}</i>
     </small>
-    <router-link :to="`/todos/${index}`" class="edit-btn">
-      ред
-    </router-link>
 
-    <button class="remove-btn" @click="$emit('remove-todo', index)">X</button>
     <div class="foterItem-container">
       <small :class="{ 'status-outdate': outdated }"
         >Завершить до: {{ formatDate }}</small
@@ -29,15 +25,12 @@ import moment from "moment";
 export default {
   name: "TodoItem",
   props: ["todo", "index"],
-  methods: {
-    removeItem(n) {
-      console.log(n);
-    }
-  },
   computed: {
+    // Форматируем дату для показа пользователю в нормальном виде
     formatDate() {
       return moment(this.todo.eDate).format("DD-MM-YYYY");
     },
+    // Проверяем дату на просрочку
     outdated() {
       return Date.parse(this.todo.eDate) < Date.now();
     }
@@ -46,27 +39,6 @@ export default {
 </script>
 
 <style lang="scss">
-.remove-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  border-radius: 50%;
-  padding: 5px 8px;
-  background: red;
-  border: none;
-  cursor: pointer;
-}
-.edit-btn {
-  position: absolute;
-  top: 10px;
-  right: 40px;
-  border-radius: 50%;
-  padding: 5px 8px;
-  background: orange;
-  border: none;
-  cursor: pointer;
-  text-decoration: none;
-}
 .todoItem-container {
   position: relative;
   border: 2px solid #333;

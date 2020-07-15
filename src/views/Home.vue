@@ -8,7 +8,6 @@
         class="todoItem-container"
         :todo="todo"
         :index="index"
-        @remove-todo="removeTodo"
       />
     </div>
     <h2 v-else>Никаких дел пока нет!</h2>
@@ -34,28 +33,20 @@ export default {
     this.getTodos();
   },
   computed: {
+    // Применяем текущий выбранный фильтр для списка дел
     todosFilter() {
-      if (!this.$route.params.filter) {
-        return this.todos;
-      } else if (this.$route.params.filter === "inwork") {
+      if (this.$route.params.filter === "inwork") {
         return this.todos.filter(todo => todo.status === false);
       } else if (this.$route.params.filter === "complite") {
         return this.todos.filter(todo => todo.status === true);
       } else if (this.$route.params.filter === "outdate") {
         return this.todos.filter(todo => Date.parse(todo.eDate) < Date.now());
       }
-      return this.$route.params.filter;
+      return this.todos;
     }
   },
   methods: {
-    removeTodo(index) {
-      this.todos.splice(index, 1);
-      this.saveTodos();
-    },
-    saveTodos() {
-      const parsed = JSON.stringify(this.todos);
-      localStorage.setItem("todos", parsed);
-    },
+    // Получаем массив дел из хранилища (можно было сделать и store с помощью VUEX, но для такого маленького приложения это лишнее...)
     getTodos() {
       if (localStorage.getItem("todos")) {
         try {

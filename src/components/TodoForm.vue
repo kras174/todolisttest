@@ -27,6 +27,7 @@
         <datepicker
           format="dd-MM-yyyy"
           :language="ru"
+          :disabled-dates="{ to: new Date() }"
           v-model="eDate"
           placeholder="Дедлайн"
         ></datepicker>
@@ -35,13 +36,22 @@
           <label for="status">Завершено</label>
         </div>
       </div>
+      <p class="errorMessage" v-show="errorMessage">{{ errorMessage }}</p>
+      <div class="button-group" v-if="$route.params.id">
+        <input type="submit" value="Сохранить дело" class="btn btn-save" />
+        <input
+          type="button"
+          value="Удалить дело"
+          class="btn btn-delete"
+          @click="removeTodo"
+        />
+      </div>
       <input
-        v-if="$route.params.id"
+        v-else
         type="submit"
-        value="Сохранить дело"
-        class="btn"
+        value="Добавить дело"
+        class="btn btn-create"
       />
-      <input v-else type="submit" value="Добавить дело" class="btn" />
     </form>
   </div>
 </template>
@@ -61,7 +71,8 @@ export default {
       eDate: null,
       status: false,
       ru: ru,
-      todos: []
+      todos: [],
+      errorMessage: ""
     };
   },
   components: {
@@ -71,19 +82,18 @@ export default {
     if (this.$route.params.id) this.getTodoInfo();
   },
   methods: {
+    // Переключатель между режимами формы
     confirmTodo() {
       if (this.$route.params.id) this.editTodo();
       else this.addTodo();
     },
-    addTodo() {
-      const newTodo = {
-        id: uuidv4(),
-        title: this.title,
-        tags: this.tags,
-        description: this.description,
-        eDate: this.eDate,
-        status: false
-      };
+    // Сохраняем массив дел в хранилище
+    saveTodos() {
+      const parsed = JSON.stringify(this.todos);
+      localStorage.setItem("todos", parsed);
+    },
+    // Получаем массив дел из хранилища
+    getTodos() {
       if (localStorage.getItem("todos")) {
         try {
           this.todos = JSON.parse(localStorage.getItem("todos"));
@@ -91,27 +101,37 @@ export default {
           localStorage.removeItem("todos");
         }
       }
-      this.todos = [...this.todos, newTodo];
-      const parsed = JSON.stringify(this.todos);
-      localStorage.setItem("todos", parsed);
-
-      this.$router.push("/");
-
-      this.title = "";
-      this.tags = "";
-      this.description = "";
-      this.eDate = null;
     },
+    // Добавляюем новую задачу в режиме добавления
+    addTodo() {
+      if (this.eDate) {
+        const newTodo = {
+          id: uuidv4(),
+          title: this.title,
+          tags: this.tags,
+          description: this.description,
+          eDate: this.eDate,
+          status: false
+        };
+        this.getTodos();
+        this.todos = [...this.todos, newTodo];
+        this.saveTodos();
+
+        this.$router.push("/");
+
+        this.title = "";
+        this.tags = "";
+        this.description = "";
+        this.eDate = null;
+      } else {
+        this.errorMessage = "Укажите дату дедлайна!";
+      }
+    },
+    // Заполняем поля формы в режиме редактирования
     getTodoInfo() {
       const index = this.$route.params.id;
 
-      if (localStorage.getItem("todos")) {
-        try {
-          this.todos = JSON.parse(localStorage.getItem("todos"));
-        } catch (e) {
-          localStorage.removeItem("todos");
-        }
-      }
+      this.getTodos();
 
       this.title = this.todos[index].title;
       this.tags = this.todos[index].tags;
@@ -119,6 +139,7 @@ export default {
       this.eDate = this.todos[index].eDate;
       this.status = this.todos[index].status;
     },
+    // Сохраняем изменения в деле
     editTodo() {
       const index = this.$route.params.id;
 
@@ -128,8 +149,14 @@ export default {
       this.todos[index].eDate = this.eDate;
       this.todos[index].status = this.status;
 
-      const parsed = JSON.stringify(this.todos);
-      localStorage.setItem("todos", parsed);
+      this.saveTodos();
+
+      this.$router.push("/");
+    },
+    // Удаляем дело
+    removeTodo() {
+      this.todos.splice(this.$route.params.id, 1);
+      this.saveTodos();
 
       this.$router.push("/");
     }
@@ -142,6 +169,9 @@ export default {
   form {
     display: flex;
     flex-direction: column;
+    .errorMessage {
+      color: red;
+    }
     input {
       margin-top: 10px;
       padding: 10px;
@@ -152,6 +182,9 @@ export default {
       padding: 10px;
       border: 2px solid #333;
     }
+    .button-group {
+      display: flex;
+    }
     .btn {
       cursor: pointer;
       background: #fff;
@@ -159,6 +192,27 @@ export default {
       transition: all 0.2s ease-in;
       &:hover {
         background: #333;
+        color: #fff;
+      }
+    }
+    .btn-create {
+      &:hover {
+        background: green;
+        color: #fff;
+      }
+    }
+    .btn-save {
+      flex: 5;
+      &:hover {
+        background: orange;
+        color: #fff;
+      }
+    }
+    .btn-delete {
+      flex: 1;
+      margin-left: 5px;
+      &:hover {
+        background: red;
         color: #fff;
       }
     }
