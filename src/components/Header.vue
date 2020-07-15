@@ -16,7 +16,11 @@
   h1 {
     margin-bottom: 10px;
   }
-  a.router-link-exact-active {
+  .router-link-exact-active {
+    text-decoration: none;
+    color: #fff;
+  }
+  a {
     text-decoration: none;
     color: #fff;
   }
